@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaussian Splat Viewer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 100%;
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+      #app {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+        gap: 16px;
+      }
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+      }
+      #controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      button, select {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #fff;
+        color: #333;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      button:hover, select:hover {
+        background: #f0f0f0;
+        border-color: #999;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      select {
+        min-width: 150px;
+      }
+      #file-loader {
+        padding: 8px 16px;
+        border: 2px dashed #ccc;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #file-loader:hover {
+        border-color: #999;
+        background: #f9f9f9;
+      }
+      #file-loader.drag-over {
+        border-color: #666;
+        background: #f0f0f0;
+      }
+      #file-input {
+        display: none;
+      }
+      #viewer-frame {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #1a1a1a;
+        position: relative;
+        /* Size based on available height, aspect-ratio determines width */
+        height: calc(100vh - 200px);
+        max-width: 100%;
+        /* Default aspect ratio, will be overwritten by JS */
+        aspect-ratio: 4 / 3;
+        /* Center horizontally */
+        margin: 0 auto;
+      }
+      #canvas-container {
+        width: 100%;
+        height: 100%;
+      }
+      #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        color: #fff;
+      }
+      #loading.visible {
+        display: flex;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      #info {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Gaussian Splat Viewer</h1>
+
+      <div id="controls">
+        <div id="file-loader">
+          <span>Drop PLY file here or click to browse</span>
+          <input type="file" id="file-input" accept=".ply" />
+        </div>
+
+        <select id="trajectory-select" disabled>
+          <option value="rotate_forward">Rotate Forward</option>
+          <option value="rotate">Rotate</option>
+          <option value="swipe">Swipe</option>
+          <option value="shake">Shake</option>
+          <option value="forward">Forward</option>
+        </select>
+
+        <button id="play-btn" disabled>Play</button>
+        <button id="pause-btn" disabled>Pause</button>
+        <button id="reset-btn" disabled>Reset</button>
+      </div>
+
+      <div id="viewer-frame">
+        <div id="canvas-container"></div>
+
+        <div id="loading">
+          <div class="spinner"></div>
+          <span>Loading splat...</span>
+        </div>
+
+        <div id="info">
+          Drag to orbit | Scroll to zoom | Right-drag to pan
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
