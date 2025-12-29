@@ -3,6 +3,7 @@ name = "sharp"
 version = "0.1"
 description = "Inference/Network/Model code for SHARP view synthesis model."
 readme = "README.md"
+requires-python = ">=3.13"
 dependencies = [
   "click",
   "gsplat",
@@ -15,6 +16,9 @@ dependencies = [
   "torch",
   "torchvision",
 ]
+
+[project.optional-dependencies]
+cloud = ["modal>=0.64.0"]
 
 [project.scripts]
 sharp = "sharp.cli:main_cli"
@@ -32,21 +36,14 @@ where = ["src"]
 
 [tool.pyright]
 include = ["src"]
-exclude = [
-    "**/node_modules",
-    "**/__pycache__",
-]
+exclude = ["**/node_modules", "**/__pycache__"]
 pythonVersion = "3.13"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
-testpaths = [
-    "tests"
-]
-filterwarnings = [
-    "ignore::DeprecationWarning"
-]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.lint.per-file-ignores]
 "__init__.py" = ["F401", "D100", "D104"]
@@ -54,16 +51,18 @@ filterwarnings = [
 [tool.ruff]
 line-length = 100
 lint.select = ["E", "F", "D", "I"]
-lint.ignore = ["D100", "D105",
+lint.ignore = [
+  "D100",
+  "D105",
   # Imperative mood of docstring.
   "D401",
 ]
-extend-exclude = [
-    "*external*",
-    "third_party",
-]
+extend-exclude = ["*external*", "third_party"]
 src = ["sharp"]
 target-version = "py39"
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[dependency-groups]
+dev = ["ty>=0.0.7"]

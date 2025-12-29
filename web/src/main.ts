@@ -26,6 +26,9 @@ const resetButtonElement = document.getElementById(
 	"reset-btn",
 ) as HTMLButtonElement;
 const loadingElement = document.getElementById("loading");
+const loadSampleButtonElement = document.getElementById(
+	"load-sample-btn",
+) as HTMLButtonElement;
 
 // Advanced settings elements
 const advancedToggleElement = document.getElementById(
@@ -148,6 +151,32 @@ async function loadFile(file: File): Promise<void> {
 	}
 }
 
+// Sample File Loading
+async function loadSampleFile(): Promise<void> {
+	const sampleFileUrl = `${import.meta.env.BASE_URL}samples/sample.ply`;
+	console.log("[main] Loading sample file from:", sampleFileUrl);
+
+	showLoading();
+	disableControls();
+
+	try {
+		const response = await fetch(sampleFileUrl);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch sample: HTTP ${response.status}`);
+		}
+		const blob = await response.blob();
+		const file = new File([blob], "sample.ply", {
+			type: "application/octet-stream",
+		});
+		await viewer.loadPly(file);
+	} catch (error) {
+		hideLoading();
+		console.error("[main] Failed to load sample file:", error);
+		const errorMessage = error instanceof Error ? error.message : String(error);
+		alert(`Failed to load sample file: ${errorMessage}`);
+	}
+}
+
 // Event Listeners
 fileInputElement?.addEventListener("change", (event) => {
 	const target = event.target as HTMLInputElement;
@@ -179,6 +208,11 @@ fileLoaderElement?.addEventListener("drop", (event) => {
 	if (file) {
 		loadFile(file);
 	}
+});
+
+// Load sample button
+loadSampleButtonElement?.addEventListener("click", () => {
+	loadSampleFile();
 });
 
 // Trajectory controls
